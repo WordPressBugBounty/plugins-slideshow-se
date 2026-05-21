@@ -3,9 +3,9 @@
  Plugin Name: Slideshow SE
  Plugin URI: http://wordpress.org/extend/plugins/slideshow-se/
  Description: The slideshow plugin is easily deployable on your website. Add any image that has already been uploaded to add to your slideshow, add text slides, or even add a video. Options and styles are customizable for every single slideshow on your website.
- Version: 2.6.0
- Requires at least: 5.0
- Tested up to: 6.9.4
+ Version: 2.7.0
+ Requires at least: 6.3
+ Tested up to: 7.0
  Requires PHP: 5.0
  Author: John West
  License: GPLv2
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class SlideshowSEPluginMain
 {
 	/** @var string $version */
-	static $version = '2.6.0';
+	static $version = '2.7.0';
 
 	/**
 	 * Bootstraps the application by assigning the right functions to
@@ -121,21 +121,27 @@ class SlideshowSEPluginMain
 
 		$currentScreen = get_current_screen();
 
-		// Enqueue 3.5 uploader
-		if ($currentScreen->post_type === 'slideshow' &&
-			function_exists('wp_enqueue_media'))
-		{
-			wp_enqueue_media();
+		$backend_script_dependencies = array(
+			'jquery',
+			'jquery-ui-sortable',
+			'wp-color-picker',
+		);
+
+		// Enqueue 3.5 uploader and editor for slideshow add/edit screens.
+		if ($currentScreen->post_type === 'slideshow') {
+			if (function_exists('wp_enqueue_media')) {
+				wp_enqueue_media();
+			}
+			if (function_exists('wp_enqueue_editor')) {
+				wp_enqueue_editor();
+				$backend_script_dependencies[] = 'wp-editor';
+			}
 		}
 
 		wp_enqueue_script(
 			'slideshow-se-jquery-image-gallery-backend-script',
 			self::getPluginUrl() . '/js/min/all.backend.min.js',
-			array(
-				'jquery',
-				'jquery-ui-sortable',
-				'wp-color-picker'
-			),
+			$backend_script_dependencies,
 			SlideshowSEPluginMain::$version,
 			false
 		);
@@ -367,9 +373,16 @@ function f1rehead_slideshow_block_init() {
 	$block_css      = 'block/index.css';
 	$block_css_full = $dir . '/' . $block_css;
 	wp_register_style(
+		'slideshow-se-editor-functional',
+		plugins_url( 'style/SlideshowSEPlugin/functional.css', __FILE__ ),
+		array(),
+		SlideshowSEPluginMain::$version
+	);
+
+	wp_register_style(
 		'f1rehead-slideshow-block',
 		plugins_url( $block_css, __FILE__ ),
-		array(),
+		array( 'slideshow-se-editor-functional' ),
 		file_exists( $block_css_full ) ? filemtime( $block_css_full ) : false
 	);
 
@@ -379,15 +392,23 @@ function f1rehead_slideshow_block_init() {
 			'posts_per_page' => -1,
 			'post_type'      => 'slideshow',
 			'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
-			'orderby'        => 'title',
-			'order'          => 'ASC',
+			'orderby'        => 'date',
+			'order'          => 'DESC',
 		)
 	);
 	$slideshow_choices = array();
 	foreach ( $slideshow_posts as $p ) {
+		$settings        = SlideshowSEPluginSlideshowSettingsHandler::getSettings( (int) $p->ID, false );
+		$slideshow_height = isset( $settings['height'] )
+			? (int) filter_var( (string) $settings['height'], FILTER_SANITIZE_NUMBER_INT )
+			: 0;
+		if ( $slideshow_height < 1 ) {
+			$slideshow_height = 200;
+		}
 		$slideshow_choices[] = array(
 			'ID'         => (int) $p->ID,
 			'post_title' => $p->post_title,
+			'height'     => $slideshow_height,
 		);
 	}
 	wp_localize_script(
@@ -403,10 +424,18 @@ function f1rehead_slideshow_block_init() {
 	register_block_type(
 		'f1rehead/slideshow',
 		array(
+			'api_version'     => 3,
 			'editor_script'   => 'f1rehead-slideshow-block-editor',
 			'editor_style'    => 'f1rehead-slideshow-block',
 			'style'           => 'f1rehead-slideshow-block',
 			'render_callback' => 'f1rehead_slideshow_render_slideshow_block',
+			// Must match src/index.js — REST block renderer validates against server registration.
+			'attributes'      => array(
+				'selectedSlideshow' => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+			),
 		)
 	);
 }

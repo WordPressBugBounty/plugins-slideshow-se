@@ -2,7 +2,7 @@
 	<div class="text-slide-template" style="display: none;">
 		<div class="widefat sortable-slides-list-item postbox">
 
-			<div class="handlediv" title="<?php esc_attr_e('Click to toggle'); ?>"><br></div>
+			<div class="handlediv" title="<?php esc_attr_e('Click to toggle', 'slideshow-se'); ?>"><br></div>
 
 			<div class="hndle">
 				<div class="slide-icon text-slide-icon"></div>
@@ -39,18 +39,26 @@
 							<?php endforeach; ?>
 						</select>
 					</div>
-					<div clear="clear"></div>
-					<textarea class="description" cols="" rows="7" style="width: 100%;"></textarea>
+					<div class="clear"></div>
+					<div class="slideshow-description-editor-field">
+						<textarea
+							id="<?php echo esc_attr( SlideshowSEPluginSlideInserter::getTextSlideTemplateEditorId() ); ?>"
+							class="description wp-editor-area"
+							rows="7"
+							cols=""
+							style="width: 100%;"
+						></textarea>
+					</div>
 
 				</div>
 
 				<div class="slideshow-group">
 
 					<div class="slideshow-label"><?php esc_attr_e('Text color', 'slideshow-se'); ?></div>
-					<input type="text" class="textColor" value="000000" />
+					<input type="text" class="textColor wp-color-picker-field" value="000000" />
 
 					<div class="slideshow-label"><?php esc_attr_e('Background color', 'slideshow-se'); ?></div>
-					<input type="text" class="color" value="FFFFFF" />
+					<input type="text" class="color wp-color-picker-field" value="FFFFFF" />
 					<div style="font-style: italic;"><?php esc_attr_e('(Leave empty for a transparent background)', 'slideshow-se'); ?></div>
 
 				</div>
@@ -87,7 +95,7 @@
 	<div class="video-slide-template" style="display: none;">
 		<div class="widefat sortable-slides-list-item postbox">
 
-			<div class="handlediv" title="<?php esc_attr_e('Click to toggle'); ?>"><br></div>
+			<div class="handlediv" title="<?php esc_attr_e('Click to toggle', 'slideshow-se'); ?>"><br></div>
 
 			<div class="hndle">
 				<div class="slide-icon video-slide-icon"></div>
@@ -128,7 +136,7 @@
 	<div class="embed-slide-template" style="display: none;">
 		<div class="widefat sortable-slides-list-item postbox">
 
-			<div class="handlediv" title="<?php esc_attr_e('Click to toggle'); ?>"><br></div>
+			<div class="handlediv" title="<?php esc_attr_e('Click to toggle', 'slideshow-se'); ?>"><br></div>
 
 			<div class="hndle">
 				<div class="slide-icon embed-slide-icon"></div>
@@ -165,7 +173,7 @@
 	<div class="image-slide-template" style="display: none;">
 		<div class="widefat sortable-slides-list-item postbox">
 
-			<div class="handlediv" title="<?php esc_attr_e('Click to toggle'); ?>"><br></div>
+			<div class="handlediv" title="<?php esc_attr_e('Click to toggle', 'slideshow-se'); ?>"><br></div>
 
 			<div class="hndle">
 				<div class="slide-icon image-slide-icon"></div>
