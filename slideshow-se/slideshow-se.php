@@ -3,7 +3,7 @@
  Plugin Name: Slideshow SE
  Plugin URI: http://wordpress.org/extend/plugins/slideshow-se/
  Description: The slideshow plugin is easily deployable on your website. Add any image that has already been uploaded to add to your slideshow, add text slides, or even add a video. Options and styles are customizable for every single slideshow on your website.
- Version: 2.7.0
+ Version: 2.7.1
  Requires at least: 6.3
  Tested up to: 7.0
  Requires PHP: 5.0
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class SlideshowSEPluginMain
 {
 	/** @var string $version */
-	static $version = '2.7.0';
+	static $version = '2.7.1';
 
 	/**
 	 * Bootstraps the application by assigning the right functions to
@@ -346,7 +346,7 @@ function f1rehead_slideshow_block_init() {
 		_doing_it_wrong(
 			__FUNCTION__,
 			'Slideshow SE: run `npm install` and `npm run build` in the plugin directory so block assets exist.',
-			'2.6.0'
+			SlideshowSEPluginMain::$version
 		);
 		if ( is_admin() && current_user_can( 'activate_plugins' ) ) {
 			add_action(
