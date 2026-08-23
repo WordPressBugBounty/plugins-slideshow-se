@@ -1,4 +1,12 @@
-<?php if ($data instanceof stdClass) : ?>
+<?php 
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ($data instanceof stdClass) : 
+?>
 	<table>
 		<?php if(count($data->settings) > 0): $i = 0; ?>
 
@@ -20,7 +28,7 @@
 		?>
 		<tr <?php if(isset($value['dependsOn'])) echo 'style="display:none;"'; ?>>
 			<td><?php echo wp_kses_post($value['description']); ?></td>
-			<td><?php echo wp_kses(SlideshowSEPluginSlideshowSettingsHandler::getInputField(SlideshowSEPluginSlideshowSettingsHandler::$styleSettingsKey, $key, $value), SlideShowSEPluginMain::getAllowedTags()); ?></td>
+			<td><?php echo wp_kses(SlideshowSEPluginSlideshowSettingsHandler::getInputField(SlideshowSEPluginSlideshowSettingsHandler::$styleSettingsKey, $key, $value), SlideshowSEPluginMain::getAllowedTags()); ?></td>
 			<td><?php esc_attr_e('Default', 'slideshow-se'); ?>: &#39;<?php echo (isset($value['options']))? esc_attr($value['options'][$value['default']]): esc_attr($value['default']); ?>&#39;</td>
 		</tr>
 
